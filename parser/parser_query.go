@@ -871,13 +871,6 @@ func (p *Parser) parseSelectStmt(pos Pos) (*SelectQuery, error) { // nolint: fun
 	if arrayJoin != nil {
 		statementEnd = arrayJoin.End()
 	}
-	window, err := p.tryParseWindowClause(p.Pos())
-	if err != nil {
-		return nil, err
-	}
-	if window != nil {
-		statementEnd = window.End()
-	}
 	prewhere, err := p.tryParsePrewhereClause(p.Pos())
 	if err != nil {
 		return nil, err
@@ -891,6 +884,13 @@ func (p *Parser) parseSelectStmt(pos Pos) (*SelectQuery, error) { // nolint: fun
 	}
 	if where != nil {
 		statementEnd = where.End()
+	}
+	window, err := p.tryParseWindowClause(p.Pos())
+	if err != nil {
+		return nil, err
+	}
+	if window != nil {
+		statementEnd = window.End()
 	}
 	groupBy, err := p.tryParseGroupByClause(p.Pos())
 	if err != nil {

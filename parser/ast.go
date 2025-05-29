@@ -5472,7 +5472,7 @@ func (w *WindowClause) String() string {
 	var builder strings.Builder
 	builder.WriteString("WINDOW ")
 	builder.WriteString(w.Name.String())
-	builder.WriteString(" ")
+	builder.WriteString(" as ")
 	builder.WriteString(w.WindowExpr.String())
 	return builder.String()
 }
@@ -5769,10 +5769,6 @@ func (s *SelectQuery) String() string { // nolint: funlen
 		builder.WriteString(" ")
 		builder.WriteString(s.ArrayJoin.String())
 	}
-	if s.Window != nil {
-		builder.WriteString(" ")
-		builder.WriteString(s.Window.String())
-	}
 	if s.Prewhere != nil {
 		builder.WriteString(" ")
 		builder.WriteString(s.Prewhere.String())
@@ -5780,6 +5776,10 @@ func (s *SelectQuery) String() string { // nolint: funlen
 	if s.Where != nil {
 		builder.WriteString(" ")
 		builder.WriteString(s.Where.String())
+	}
+	if s.Window != nil {
+		builder.WriteString(" ")
+		builder.WriteString(s.Window.String())
 	}
 	if s.GroupBy != nil {
 		builder.WriteString(" ")
@@ -5852,11 +5852,6 @@ func (s *SelectQuery) Accept(visitor ASTVisitor) error {
 			return err
 		}
 	}
-	if s.Window != nil {
-		if err := s.Window.Accept(visitor); err != nil {
-			return err
-		}
-	}
 	if s.Prewhere != nil {
 		if err := s.Prewhere.Accept(visitor); err != nil {
 			return err
@@ -5864,6 +5859,11 @@ func (s *SelectQuery) Accept(visitor ASTVisitor) error {
 	}
 	if s.Where != nil {
 		if err := s.Where.Accept(visitor); err != nil {
+			return err
+		}
+	}
+	if s.Window != nil {
+		if err := s.Window.Accept(visitor); err != nil {
 			return err
 		}
 	}
